@@ -1,5 +1,9 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import styled from 'styled-components';
+
+import store from './State/store';
+
 import Controlls from './Components/Controlls';
 import ResultList from './Components/Results/ResultList';
 
@@ -11,7 +15,7 @@ const Container = styled.section`
 
 function App() {
   return (
-    <div>
+    <Provider store={store}>
       <main>
         <Container>
           <Controlls />
@@ -20,7 +24,7 @@ function App() {
           <ResultList />
         </Container>
       </main>
-    </div>
+    </Provider>
   );
 }
 
