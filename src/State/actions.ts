@@ -2,7 +2,9 @@ export enum ActionType {
     selectURL = "SELECT_URL",
     fetchTypesStart = "FETCH_TYPES_START",
     fetchTypesSuccess = "FETCH_TYPES_SUCCESS",
-    fetchResultError = "FETCH_RESULTS_ERROR"
+    fetchResultsStart = "FETCH_RESULTS_START",
+    fetchResultsSuccess = "FETCH_RESULTS_SUCCESS",
+    resultsApiError = "RESULTS_API_ERROR",
 }
 
 export type Action = {
@@ -20,8 +22,18 @@ export const fetchTypesSuccess = (data: string[]): Action => ({
     payload: data
 });
 
+export const fetchResultsStart = (url?: string): Action => ({
+    type: ActionType.fetchResultsStart,
+    payload: url
+});
+
+export const fetchResultsSuccess = (data: any): Action => ({
+    type: ActionType.fetchResultsSuccess,
+    payload: data
+});
+
 export const fetchResultError = (errorMessage: any): Action => ({
-    type: ActionType.fetchResultError,
+    type: ActionType.resultsApiError,
     payload: errorMessage
 });
 

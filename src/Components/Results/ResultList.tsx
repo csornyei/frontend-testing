@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import axios from '../../utils/axios';
+import React from 'react';
 import ResultElement from './ResultElement';
 import ResultControlls from './ResultControlls';
+import { useSelector } from 'react-redux';
+import { State } from '../../State/reducer';
 
 export default () => {
-    const [results, setResults] = useState<any[]>([]);
+    const { results, isFetching } = useSelector((state: State) => state);
 
-    useEffect(() => {
         axios.get('/api/results').then(res => {
             setResults(res.data);
         }).catch(err => {
