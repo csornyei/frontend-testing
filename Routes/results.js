@@ -40,6 +40,17 @@ router.post('/', async (req, res) => {
 
 });
 
+router.get('/urls', async (_, res) => {
+    try {
+        const result = await Result.distinct('url');
+        res.send(result);
+    } catch(error) {
+        console.log(error)
+        res.status(500);
+        res.send({error: "Server Error"});
+    }
+});
+
 router.get('/:id', async (req, res) => {
     try {
         const result = await Result.findOne({_id: req.params.id});
@@ -53,6 +64,6 @@ router.get('/:id', async (req, res) => {
         res.status(404);
         res.send({error: "Result doesn't exists!"})
     }
-})
+});
 
 module.exports = router;
