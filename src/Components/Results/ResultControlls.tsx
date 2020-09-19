@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {State} from '../../State/reducer';
-import { selectURL, fetchTypesStart, fetchResultsStart } from '../../State/actions';
+import { selectURL, fetchUrlsStart, fetchResultsStart } from '../../State/actions';
 import { NOT_SELECTED_URL_VALUE } from '../../utils/constants';
 
 const Container = styled.div`
@@ -37,10 +37,10 @@ const Button = styled.button`
 
 export default () => {
     const dispatch = useDispatch();
-    const { selectedUrl, types } = useSelector((state: State) => state)
+    const { selectedUrl, urls } = useSelector((state: State) => state)
 
     useEffect(() => {
-        dispatch(fetchTypesStart());
+        dispatch(fetchUrlsStart());
     }, [dispatch]);
 
     useEffect(() => {
@@ -59,8 +59,8 @@ export default () => {
                     dispatch(selectURL(event.target.value));
                 }}>
                     <option value={NOT_SELECTED_URL_VALUE} disabled>Please select...</option>
-                    {types.map((type) => (
-                        <option key={type} value={type} >{type}</option>
+                    {urls.map((url) => (
+                        <option key={url} value={url} >{url}</option>
                     ))}
                 </Selector>
 

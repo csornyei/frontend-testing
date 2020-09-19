@@ -1,7 +1,7 @@
 export enum ActionType {
     selectURL = "SELECT_URL",
-    fetchTypesStart = "FETCH_TYPES_START",
-    fetchTypesSuccess = "FETCH_TYPES_SUCCESS",
+    fetchUrlsStart = "FETCH_URLS_START",
+    fetchUrlsSuccess = "FETCH_URLS_SUCCESS",
     fetchResultsStart = "FETCH_RESULTS_START",
     fetchResultsSuccess = "FETCH_RESULTS_SUCCESS",
     resultsApiError = "RESULTS_API_ERROR",
@@ -12,13 +12,13 @@ export type Action = {
     payload: any
 }
 
-export const fetchTypesStart = (): Action => ({
-    type: ActionType.fetchTypesStart,
+export const fetchUrlsStart = (): Action => ({
+    type: ActionType.fetchUrlsStart,
     payload: null
 });
 
-export const fetchTypesSuccess = (data: string[]): Action => ({
-    type: ActionType.fetchTypesSuccess,
+export const fetchUrlsSuccess = (data: string[]): Action => ({
+    type: ActionType.fetchUrlsSuccess,
     payload: data
 });
 
