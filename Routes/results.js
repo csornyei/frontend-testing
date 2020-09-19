@@ -4,7 +4,12 @@ const Result = require("../models/testResult");
 const testRunner = require("../scripts/runTest");
 
 router.get('/', async (req, res) => {
-    const results = await Result.find();
+    const url = req.query.url;
+    const filters = {}
+    if (url) {
+        filters.url = url;
+    }
+    const results = await Result.find(filters);
     res.send(results);
 });
 
