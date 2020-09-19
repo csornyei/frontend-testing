@@ -1,6 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import axios from '../../utils/axios';
+import React, {useEffect} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import {State} from '../../State/reducer';
+import { selectURL, fetchTypesStart } from '../../State/actions';
 
 const Selector = styled.select`
     width: 30%;
@@ -11,18 +13,11 @@ const Selector = styled.select`
 
 
 export default () => {
-
-    const [types, setTypes] = useState<string[]>([]);
-    const [selectedUrl, setSelectedUrl] = useState("");
+    const dispatch = useDispatch();
+    const { selectedUrl, types } = useSelector((state: State) => state)
 
     useEffect(() => {
-        axios.get('/api/results/types')
-        .then(res => {
-            setTypes(res.data)
-        })
-        .catch(err => {
-            console.log(err)
-        });
+        dispatch(fetchTypesStart());
     }, []);
 
     return (
@@ -31,7 +26,7 @@ export default () => {
                 Result Controlls
             </h1>
             <Selector defaultValue={selectedUrl} onChange={(event) => {
-                setSelectedUrl(event.target.value)
+                dispatch(selectURL(event.target.value));
             }}>
                 <option value="" disabled>Please select...</option>
                 {types.map((type) => (
