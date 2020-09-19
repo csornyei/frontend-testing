@@ -16,6 +16,7 @@ mongoose.connect(config.mongoDBString,
 })
 
 app.use("/", middlewares.logger);
+app.use("/", middlewares.cors);
 
 app.use("/api/", apiRouter);
 app.use("/", mainRouter);

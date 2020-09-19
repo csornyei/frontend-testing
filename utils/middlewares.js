@@ -10,4 +10,11 @@ const logger = async (req, _, next) => {
     next()
 }
 
+const cors = async (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+}
+
 exports.logger = logger
+exports.cors = cors;
