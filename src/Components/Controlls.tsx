@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import axios from '../utils/axios';
+import LoadingSpinner from './LoadingSpinner';
 
 const ControllsContainer = styled.div`
     margin-top: 24px;
@@ -42,12 +43,16 @@ const RunButton = styled.button`
     }
 `;
 
+const LoadingContainer = styled.div`
+    align-self: center;
+    margin-top: 24px;
+`;
+
 export default () => {
     const [testUrl, setTestUrl] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const buttonPressed = async () => {
-        console.log('Button pressed');
         setIsLoading(true)
         const resp = await axios.post('/api/results', {
             url: testUrl
@@ -61,7 +66,10 @@ export default () => {
             <InputLabel>URL to test</InputLabel>
             <UrlInput type="text" id="url" name="url" value={testUrl} onChange={(event) => {setTestUrl(event.target.value)}} />
             <RunButton onClick={buttonPressed} >Run test</RunButton>
-            {isLoading ? "Loading..." : ""}
+            {isLoading ?
+                <LoadingContainer>
+                    <LoadingSpinner />
+                </LoadingContainer>: ""}
         </ControllsContainer>
     )
 }
