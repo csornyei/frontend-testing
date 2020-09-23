@@ -17,6 +17,8 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
+console.log(process.env);
+
 mongoose.connect(process.env.DATABASE_URL,
     { useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
     console.log('Connected to database');
