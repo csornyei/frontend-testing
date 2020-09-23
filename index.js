@@ -1,5 +1,8 @@
+const path = require('path');
+
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const mainRouter = require('./Routes/main');
 const apiRouter = require('./Routes/api');
@@ -9,6 +12,10 @@ const config = require('./config');
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(helmet());
+app.use('/static', express.static(path.join(__dirname, 'public')));
+app.set('view engine', 'ejs');
+app.set('views', './views');
 
 mongoose.connect(config.mongoDBString,
     { useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
@@ -21,7 +28,6 @@ app.use("/", middlewares.cors);
 app.use("/api/", apiRouter);
 app.use("/", mainRouter);
 app.use("*", (req, res) => {
-    console.log("404");
     res.status(404);
     res.send('404 - Page not found')
 })
