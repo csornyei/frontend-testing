@@ -23,7 +23,6 @@ router.post('/', async (req, res) => {
             "Error": "Error while generating lighthouse report"
         });
     });
-    console.log('jsonReport',jsonReport)
     const parsedReport = JSON.parse(jsonReport);
     try {
         const results = new Result({

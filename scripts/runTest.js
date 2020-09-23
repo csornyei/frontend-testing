@@ -5,13 +5,15 @@ const config = require('lighthouse/lighthouse-core/config/lr-desktop-config.js')
 const reportGenerator = require('lighthouse/lighthouse-core/report/report-generator');
 const request = require('request');
 const util = require('util');
+const chromium = require('chromium');
+require('chromedriver');
 
 exports.getJSONLighthouseReport = async (url) => {
-    console.log('lighthouse report')
     try {
         const options = {
             logLevel: 'error',
             output: 'json',
+            chromePath: chromium.path,
             disableDeviceEmulation: true,
             defaultViewport: {
                 width: 1200,
@@ -39,10 +41,8 @@ exports.getJSONLighthouseReport = async (url) => {
 
         await browser.disconnect();
         await chrome.kill();
-        console.log('returning json')
         return json;
     } catch (error) {
-        console.log('lighthouse error', error)
         throw Error(error);
     }
 };
