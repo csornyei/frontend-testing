@@ -7,6 +7,7 @@ const request = require('request');
 const util = require('util');
 
 exports.getJSONLighthouseReport = async (url) => {
+    console.log('lighthouse report')
     const options = {
         logLevel: 'error',
         output: 'json',
@@ -37,7 +38,7 @@ exports.getJSONLighthouseReport = async (url) => {
 
     await browser.disconnect();
     await chrome.kill();
-
+    console.log('returning json')
     return json;
 };
 
