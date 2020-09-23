@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 const mainRouter = require('./Routes/main');
 const apiRouter = require('./Routes/api');
 const middlewares = require('./utils/middlewares');
-const config = require('./config');
 
 const app = express();
 app.use(bodyParser.json());
