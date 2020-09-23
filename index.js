@@ -17,9 +17,9 @@ app.use('/static', express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
-mongoose.connect(config.mongoDBString,
+mongoose.connect(process.env.DATABASE_URL,
     { useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
-    console.log('Connected to database')
+    console.log('Connected to database');
 })
 
 app.use("/", middlewares.logger);
@@ -30,8 +30,10 @@ app.use("/", mainRouter);
 app.use("*", (req, res) => {
     res.status(404);
     res.send('404 - Page not found')
-})
+});
 
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
+const PORT = process.env.PORT;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });

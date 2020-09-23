@@ -3,7 +3,6 @@ const router = express.Router();
 const Logs = require('../models/logs');
 
 router.get('/', (req, res) => {
-    console.log('MAIN PAGE');
     res.send('MAIN PAGE')
 });
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Result = require("../models/testResult");
+const Log = require("../models/logs");
 const testRunner = require("../scripts/runTest");
 
 router.get('/', async (req, res) => {
@@ -37,20 +38,32 @@ router.post('/', async (req, res) => {
         await results.save();
         res.send(results)
     } catch (e) {
+        const log = new Log({
+            date: Date.now(),
+            route: req.url,
+            ip: req.ip,
+            error: e
+        });
+        await log.save();
         res.status(500);
-        console.log(e);
         res.send(e);
     }
 
 
 });
 
-router.get('/urls', async (_, res) => {
+router.get('/urls', async (req, res) => {
     try {
         const result = await Result.distinct('url');
         res.send(result);
     } catch(error) {
-        console.log(error)
+        const log = new Log({
+            date: Date.now(),
+            route: req.url,
+            ip: req.ip,
+            error: error
+        });
+        await log.save();
         res.status(500);
         res.send({error: "Server Error"});
     }
