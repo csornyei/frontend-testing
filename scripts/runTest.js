@@ -8,38 +8,43 @@ const util = require('util');
 
 exports.getJSONLighthouseReport = async (url) => {
     console.log('lighthouse report')
-    const options = {
-        logLevel: 'error',
-        output: 'json',
-        disableDeviceEmulation: true,
-        defaultViewport: {
-            width: 1200,
-            height: 900
-        },
-        chromeFlags: ['--disable-mobile-emulation', '--headless']
-    };
+    try {
+        const options = {
+            logLevel: 'error',
+            output: 'json',
+            disableDeviceEmulation: true,
+            defaultViewport: {
+                width: 1200,
+                height: 900
+            },
+            chromeFlags: ['--disable-mobile-emulation', '--headless']
+        };
 
-    const chrome = await chromeLauncher.launch(options);
-    options.port = chrome.port;
+        const chrome = await chromeLauncher.launch(options);
+        options.port = chrome.port;
 
-    const response = await util.promisify(request)(`http://localhost:${options.port}/json/version`);
-    const {webSocketDebuggerUrl} = JSON.parse(response.body);
-    const browser = await puppeteer.connect({browserWSEndpoint: webSocketDebuggerUrl});
+        const response = await util.promisify(request)(`http://localhost:${options.port}/json/version`);
+        const {webSocketDebuggerUrl} = JSON.parse(response.body);
+        const browser = await puppeteer.connect({browserWSEndpoint: webSocketDebuggerUrl});
 
-    const page = (await browser.pages())[0];
-    await page.setViewport({
-        width: options.defaultViewport.width,
-        height: options.defaultViewport.height
-    });
-    await page.goto(url, {waitUntil: 'networkidle2'});
+        const page = (await browser.pages())[0];
+        await page.setViewport({
+            width: options.defaultViewport.width,
+            height: options.defaultViewport.height
+        });
+        await page.goto(url, {waitUntil: 'networkidle2'});
 
-    const report = await lighthouse(page.url(), options, config).then(results => results);
-    const json = reportGenerator.generateReport(report.lhr, 'json');
+        const report = await lighthouse(page.url(), options, config).then(results => results);
+        const json = reportGenerator.generateReport(report.lhr, 'json');
 
-    await browser.disconnect();
-    await chrome.kill();
-    console.log('returning json')
-    return json;
+        await browser.disconnect();
+        await chrome.kill();
+        console.log('returning json')
+        return json;
+    } catch (error) {
+        console.log('lighthouse error', error)
+        throw Error(error);
+    }
 };
 
 exports.getLighthouseScores = (report) => {
