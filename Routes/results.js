@@ -10,7 +10,9 @@ router.get('/', async (req, res) => {
     if (url) {
         filters.url = url;
     }
+    console.log('Getting results')
     const results = await Result.find(filters);
+    console.log('Sending results')
     res.send(results);
 });
 
