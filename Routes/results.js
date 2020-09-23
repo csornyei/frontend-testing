@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
     // TODO - test if url is correct
     const {url} = req.body;
-    jsonReport = await testRunner.getJSONLighthouseReport(url).catch((reason) => {
+    const jsonReport = await testRunner.getJSONLighthouseReport(url).catch((reason) => {
         res.status(500);
         res.send({
             "Error": "Error while generating lighthouse report"
