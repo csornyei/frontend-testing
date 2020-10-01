@@ -1,14 +1,5 @@
-import { Action, ActionType } from './actions'
+import { Action, ActionType, State } from '../utils/types'
 import { NOT_SELECTED_URL_VALUE } from '../utils/constants';
-
-export interface State {
-    selectedUrl: string;
-    isFetching: boolean;
-    isRunningTest: boolean;
-    urls: string[];
-    results: any[];
-    errorMessage: any
-};
 
 const initialState: State = {
     selectedUrl: NOT_SELECTED_URL_VALUE,

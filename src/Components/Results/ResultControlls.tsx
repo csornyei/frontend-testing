@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import {State} from '../../State/reducer';
+import {State} from '../../utils/types';
 import { selectURL, fetchUrlsStart, fetchResultsStart } from '../../State/actions';
 import { NOT_SELECTED_URL_VALUE } from '../../utils/constants';
 import Button from '../Common/Button';

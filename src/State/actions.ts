@@ -1,18 +1,5 @@
-export enum ActionType {
-    selectURL = "SELECT_URL",
-    fetchUrlsStart = "FETCH_URLS_START",
-    fetchUrlsSuccess = "FETCH_URLS_SUCCESS",
-    fetchResultsStart = "FETCH_RESULTS_START",
-    fetchResultsSuccess = "FETCH_RESULTS_SUCCESS",
-    resultsApiError = "RESULTS_API_ERROR",
-    runTestStart = 'RUN_TEST_START',
-    runTestSuccess = 'RUN_TEST_SUCCESS',
-}
+import { Action, ActionType } from "../utils/types";
 
-export type Action = {
-    type: ActionType,
-    payload: any
-}
 
 export const fetchUrlsStart = (): Action => ({
     type: ActionType.fetchUrlsStart,

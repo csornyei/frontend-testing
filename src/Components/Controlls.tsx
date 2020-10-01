@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import LoadingSpinner from './LoadingSpinner';
 import Button from './Common/Button';
-import { State } from '../State/reducer';
+import { State } from '../utils/types';
 import { runTestStart } from '../State/actions';
 
 const ControllsContainer = styled.div`

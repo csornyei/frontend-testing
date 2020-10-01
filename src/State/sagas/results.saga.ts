@@ -1,6 +1,8 @@
 import {
     Action,
-    ActionType,
+    ActionType
+} from '../../utils/types';
+import {
     fetchUrlsSuccess ,
     fetchResultError,
     fetchResultsSuccess,
