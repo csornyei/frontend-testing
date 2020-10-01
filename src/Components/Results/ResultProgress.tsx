@@ -19,7 +19,6 @@ export default ({radius, progress}: {radius: number, progress: number}) => {
     })();
 
     useEffect(() => {
-        console.log(canvasRef.current);
         if (canvasRef.current !== null) {
             const context = canvasRef.current.getContext('2d')!;
             context.beginPath();

@@ -77,6 +77,7 @@ export default ({result} : {result: any}) => {
                     <ScoreValue> {result.scores.PWA} </ScoreValue>
                 </div>
             </ScoreRow>
+            <button>Show more</button>
         </Container>
     )
 }

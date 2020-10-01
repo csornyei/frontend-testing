@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import {State} from '../../State/reducer';
 import { selectURL, fetchUrlsStart, fetchResultsStart } from '../../State/actions';
 import { NOT_SELECTED_URL_VALUE } from '../../utils/constants';
+import Button from '../Common/Button';
 
 const Container = styled.div`
 display: flex;
@@ -15,24 +16,6 @@ const Selector = styled.select`
     padding: 6px 12px;
     border-radius: 8px;
     border: none;
-`;
-
-const Button = styled.button`
-    width: 15%;
-    align-self: flex-end;
-    margin-left: auto;
-    padding: 8px 6px;
-    border: none;
-    border-radius: 8px;
-    background-color: #15bbed;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-    outline: none;
-
-    &:active {
-        transform: translateY(5px);
-    }
 `;
 
 export default () => {
@@ -64,10 +47,17 @@ export default () => {
                     ))}
                 </Selector>
 
-                <Button onClick={() => {
+                <Button
+                style={{
+                    backgroundColor: '#15bbed',
+                    marginLeft: 'auto',
+                    alignSelf: 'flex-end'
+                }}
+                onClick={() => {
                     dispatch(selectURL(NOT_SELECTED_URL_VALUE));
                     dispatch(fetchResultsStart(""))
-                }} > Fetch all results </Button>
+                }}
+                title='Fetch all results' />
             </Container>
         </div>
     )

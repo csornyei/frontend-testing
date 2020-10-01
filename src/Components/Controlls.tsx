@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import axios from '../utils/axios';
 import LoadingSpinner from './LoadingSpinner';
+import Button from './Common/Button';
 
 const ControllsContainer = styled.div`
     margin-top: 24px;
@@ -26,23 +27,6 @@ const InputLabel = styled.h2`
     text-align: center;
 `;
 
-const RunButton = styled.button`
-    width: 10%;
-    align-self: center;
-    padding: 8px 6px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    background-color: #81b214;
-    font-size: 18px;
-    font-weight: bold;
-    outline: none;
-
-    &:active {
-        transform: translateY(5px);
-    }
-`;
-
 const LoadingContainer = styled.div`
     align-self: center;
     margin-top: 24px;
@@ -65,8 +49,8 @@ export default () => {
         <ControllsContainer>
             <InputLabel>URL to test</InputLabel>
             <UrlInput type="text" id="url" name="url" value={testUrl} onChange={(event) => {setTestUrl(event.target.value)}} />
-            <RunButton onClick={buttonPressed} >Run test</RunButton>
-            {isLoading ?
+            <Button onClick={buttonPressed} title="Run test" style={{width: '10%', alignSelf: 'center', backgroundColor: '#81b214'}} />
+            {isRunningTest ?
                 <LoadingContainer>
                     <LoadingSpinner />
                 </LoadingContainer>: ""}
