@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import {State} from '../../utils/types';
 import { selectURL, fetchUrlsStart, fetchResultsStart } from '../../State/actions';
 import { NOT_SELECTED_URL_VALUE } from '../../utils/constants';
-import Button from '../Common/Button';
+import { ButtonPrimary } from '../Common/Button';
 
 const Container = styled.div`
 display: flex;
@@ -55,9 +55,8 @@ export default () => {
                     ))}
                 </Selector>
 
-                <Button
+                <ButtonPrimary
                 style={{
-                    backgroundColor: '#15bbed',
                     marginLeft: 'auto',
                     alignSelf: 'flex-end'
                 }}

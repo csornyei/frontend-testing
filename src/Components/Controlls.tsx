@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import LoadingSpinner from './LoadingSpinner';
-import Button from './Common/Button';
+import { ButtonSuccess } from './Common/Button';
 import { State } from '../utils/types';
 import { runTestStart } from '../State/actions';
 
@@ -47,7 +47,7 @@ export default () => {
         <ControllsContainer>
             <InputLabel>URL to test</InputLabel>
             <UrlInput type="text" id="url" name="url" value={testUrl} onChange={(event) => {setTestUrl(event.target.value)}} />
-            <Button onClick={buttonPressed} title="Run test" style={{width: '10%', alignSelf: 'center', backgroundColor: '#81b214'}} />
+            <ButtonSuccess onClick={buttonPressed} title="Run test" style={{width: '10%', alignSelf: 'center'}} />
             {isRunningTest ?
                 <LoadingContainer>
                     <LoadingSpinner />

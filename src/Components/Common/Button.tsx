@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Button = styled.button`
+const StyledButton = styled.button`
     padding: 6px 8px;
     border: none;
     border-radius: 8px;
@@ -14,12 +14,26 @@ const Button = styled.button`
     }
 `;
 
-export default (
-    {title, style = {}, onClick = () => {}}:
-    {title: string, style?: React.CSSProperties, onClick: () => any}
+type ButtonProps = {
+    title: string,
+    onClick?: () => any
+    style?: React.CSSProperties,
+}
+
+const Button = (
+    {
+        title,
+        onClick,
+        style,
+    }: ButtonProps
     ) => {
 
     return (
-        <Button onClick={onClick} style={{...style}}> {title} </Button>
+        <StyledButton onClick={onClick} style={{...style}}> {title} </StyledButton>
     )
 }
+
+export const ButtonSuccess = (props: ButtonProps) => <Button {...props} style={{...props.style, backgroundColor: '#81b214'}} />
+export const ButtonPrimary = (props: ButtonProps) => <Button {...props} style={{...props.style, backgroundColor: '#15bbed'}} />
+
+export default Button;

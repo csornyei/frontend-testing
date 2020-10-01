@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { formatDateTime } from '../../utils/utils';
 import ResultProgress from './ResultProgress';
+import { ButtonSuccess } from '../Common/Button';
 
 const Container = styled.div`
     width: 75%;
@@ -77,7 +78,11 @@ export default ({result} : {result: any}) => {
                     <ScoreValue> {result.scores.PWA} </ScoreValue>
                 </div>
             </ScoreRow>
-            <button>Show more</button>
+            <ButtonSuccess title={'Show more'} style={{
+                width: '25%',
+                alignSelf: 'center',
+                marginTop: '16px'
+                }} />
         </Container>
     )
 }
