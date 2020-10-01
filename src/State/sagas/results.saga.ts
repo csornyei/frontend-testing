@@ -1,4 +1,10 @@
-import { Action, ActionType, fetchUrlsSuccess , fetchResultError, fetchResultsSuccess } from "../actions";
+import {
+    Action,
+    ActionType,
+    fetchUrlsSuccess ,
+    fetchResultError,
+    fetchResultsSuccess,
+    runTestSuccess } from "../actions";
 import { takeEvery, put } from "redux-saga/effects";
 import axios from '../../utils/axios';
 
@@ -24,7 +30,20 @@ function* fetchResults(action: Action) {
     }
 }
 
+function* runTest(action: Action) {
+    const {payload} = action;
+    try {
+        const testResponse = yield axios.post('/api/results', {url: payload});
+        const testData = yield testResponse.data;
+        console.log(testData);
+        yield put(runTestSuccess(testData));
+    } catch (error) {
+        yield put(fetchResultError(error));
+    }
+}
+
 export default function* watchFetchResultsSagas() {
     yield takeEvery(ActionType.fetchUrlsStart, fetchUrls);
-    yield takeEvery(ActionType.fetchResultsStart, fetchResults)
+    yield takeEvery(ActionType.fetchResultsStart, fetchResults);
+    yield takeEvery(ActionType.runTestStart, runTest);
 }

@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import axios from '../utils/axios';
 import LoadingSpinner from './LoadingSpinner';
 import Button from './Common/Button';
+import { State } from '../State/reducer';
+import { runTestStart } from '../State/actions';
 
 const ControllsContainer = styled.div`
     margin-top: 24px;
@@ -33,16 +35,12 @@ const LoadingContainer = styled.div`
 `;
 
 export default () => {
+    const dispatch = useDispatch();
     const [testUrl, setTestUrl] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const {isRunningTest} = useSelector((state: State) => state);
 
     const buttonPressed = async () => {
-        setIsLoading(true)
-        const resp = await axios.post('/api/results', {
-            url: testUrl
-        });
-        setIsLoading(false);
-        console.log(resp);
+        dispatch(runTestStart(testUrl));
     }
 
     return (

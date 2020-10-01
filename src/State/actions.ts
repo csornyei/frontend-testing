@@ -5,6 +5,8 @@ export enum ActionType {
     fetchResultsStart = "FETCH_RESULTS_START",
     fetchResultsSuccess = "FETCH_RESULTS_SUCCESS",
     resultsApiError = "RESULTS_API_ERROR",
+    runTestStart = 'RUN_TEST_START',
+    runTestSuccess = 'RUN_TEST_SUCCESS',
 }
 
 export type Action = {
@@ -41,3 +43,13 @@ export const selectURL = (url: string): Action => ({
     type: ActionType.selectURL,
     payload: url
 });
+
+export const runTestStart = (url: string): Action => ({
+    type: ActionType.runTestStart,
+    payload: url
+})
+
+export const runTestSuccess = (data: any): Action => ({
+    type: ActionType.runTestSuccess,
+    payload: data
+})

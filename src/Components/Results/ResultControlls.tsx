@@ -20,7 +20,7 @@ const Selector = styled.select`
 
 export default () => {
     const dispatch = useDispatch();
-    const { selectedUrl, urls } = useSelector((state: State) => state)
+    const { selectedUrl, urls, isRunningTest } = useSelector((state: State) => state)
 
     useEffect(() => {
         dispatch(fetchUrlsStart());
@@ -31,6 +31,14 @@ export default () => {
             dispatch(fetchResultsStart(selectedUrl));
         }
     }, [dispatch, selectedUrl]);
+
+    useEffect(() => {
+        if (selectedUrl !== NOT_SELECTED_URL_VALUE && isRunningTest === false) {
+            dispatch(fetchResultsStart(selectedUrl));
+        }
+    // selecting new url shouldn't trigger this hook
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dispatch, isRunningTest]);
 
     return (
         <div>
