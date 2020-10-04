@@ -47,3 +47,8 @@ export type Result = {
     metrics: ResultMetrics,
     scores: ResultScores
 };
+
+export type MetricIdWithType = {
+    id: string,
+    metricType: keyof ResultMetrics
+}

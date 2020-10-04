@@ -27,7 +27,6 @@ function* fetchResults(action: Action) {
     try {
         const resultsResponse = yield axios.get(`/api/results${query}`);
         const results = yield resultsResponse.data;
-        console.log(results);
         yield put(fetchResultsSuccess(results));
     } catch (error) {
         yield put(fetchResultError(error));

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { format } from 'date-fns';
 import ResultProgress from './ResultProgress';
 import { ButtonSuccess } from '../Common/Button';
+import ResultDetails from './ResultDetails/ResultDetails';
 
 const Container = styled.div`
     width: 75%;
@@ -32,6 +33,7 @@ const ResultTitle = styled.h1`
 const ScoreRow = styled.div`
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
 `;
 
 const ScoreTitle = styled.h3`
@@ -44,7 +46,15 @@ const ScoreValue = styled.h4`
     text-align: center
 `;
 
-export default ({result} : {result: any}) => {
+export default ({
+        result,
+        onShowDetailsClicked,
+        showDetails
+    } : {
+        result: any,
+        onShowDetailsClicked: () => void,
+        showDetails: boolean
+    }) => {
     return (
         <Container>
             <ResultTitleContainer>
@@ -79,10 +89,12 @@ export default ({result} : {result: any}) => {
                 </div>
             </ScoreRow>
             <ButtonSuccess title={'Show more'} style={{
-                width: '25%',
-                alignSelf: 'center',
-                marginTop: '16px'
-                }} />
+                    width: '25%',
+                    alignSelf: 'center',
+                    marginTop: '16px'
+                }}
+                onClick={onShowDetailsClicked} />
+            {showDetails ? <ResultDetails metrics={result.metrics} /> : null}
         </Container>
     )
 }
