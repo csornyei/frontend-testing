@@ -3,7 +3,9 @@ import {
     ActionType
 } from '../../utils/types';
 import {
-    fetchUrlsSuccess ,
+    fetchUrlsStart,
+    fetchResultsStart,
+    fetchUrlsSuccess,
     fetchResultError,
     fetchResultsSuccess,
     runTestSuccess } from "../actions";
@@ -37,8 +39,9 @@ function* runTest(action: Action) {
     try {
         const testResponse = yield axios.post('/api/results', {url: payload});
         const testData = yield testResponse.data;
-        console.log(testData);
         yield put(runTestSuccess(testData));
+        yield put(fetchUrlsStart());
+        yield put(fetchResultsStart(payload));
     } catch (error) {
         yield put(fetchResultError(error));
     }

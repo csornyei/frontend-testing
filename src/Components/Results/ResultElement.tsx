@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { formatDateTime } from '../../utils/utils';
+import { format } from 'date-fns';
 import ResultProgress from './ResultProgress';
 import { ButtonSuccess } from '../Common/Button';
 
@@ -49,7 +49,7 @@ export default ({result} : {result: any}) => {
         <Container>
             <ResultTitleContainer>
                 <ResultTitle> {result.url} </ResultTitle>
-                <ResultTitle> {formatDateTime(result.date)} </ResultTitle>
+                <ResultTitle> {format(new Date(result.date), 'yyyy-MM-ii HH:mm')} </ResultTitle>
             </ResultTitleContainer>
             <ScoreRow>
                 <div>

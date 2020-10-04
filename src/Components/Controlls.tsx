@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import LoadingSpinner from './LoadingSpinner';
 import { ButtonSuccess } from './Common/Button';
+import  InputWithSuggestions from './Common/InputWithSuggestions';
 import { State } from '../utils/types';
 import { runTestStart } from '../State/actions';
 
@@ -14,19 +15,11 @@ const ControllsContainer = styled.div`
     flex-direction: column;
 `;
 
-const UrlInput = styled.input`
-    width: 90%;
-    display: block;
-    margin: 16px auto;
-    padding: 6px 8px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-`;
-
-const InputLabel = styled.h2`
+const InputLabel = styled.label`
     align-self: center;
     text-align: center;
+    font-size: 26px;
+    font-weight: bold;
 `;
 
 const LoadingContainer = styled.div`
@@ -37,7 +30,7 @@ const LoadingContainer = styled.div`
 export default () => {
     const dispatch = useDispatch();
     const [testUrl, setTestUrl] = useState("");
-    const {isRunningTest} = useSelector((state: State) => state);
+    const {isRunningTest, urls} = useSelector((state: State) => state);
 
     const buttonPressed = async () => {
         dispatch(runTestStart(testUrl));
@@ -45,8 +38,14 @@ export default () => {
 
     return (
         <ControllsContainer>
-            <InputLabel>URL to test</InputLabel>
-            <UrlInput type="text" id="url" name="url" value={testUrl} onChange={(event) => {setTestUrl(event.target.value)}} />
+            <InputLabel htmlFor="url">URL to test</InputLabel>
+            <InputWithSuggestions
+                style={{width: '90%'}}
+                id="url" name="url"
+                value={testUrl}
+                onChange={(url) => {setTestUrl(url)}}
+                suggestions={urls}
+            />
             <ButtonSuccess onClick={buttonPressed} title="Run test" style={{width: '10%', alignSelf: 'center'}} />
             {isRunningTest ?
                 <LoadingContainer>
