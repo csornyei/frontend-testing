@@ -20,11 +20,14 @@ export default () => {
     const [chartData, setChartData] = useState<ChartData[]>([]);
 
     useEffect(() => {
-        setChartData(results.map((result) => ({
+        setChartData(results
+            .map((result) => ({
                 date: format(new Date(result.date), 'yyyy-MM-ii HH:mm'),
                 ...result.scores
-        })))
+            }))
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()))
     }, [results]);
+
 
     return (
         <ChartContainer>
