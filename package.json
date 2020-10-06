@@ -1,0 +1,21 @@
+{
+  "name": "frontend-testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "preinstall": "node ./scripts/install.js",
+    "start": "node ./scripts/start.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/csornyei/frontend-testing.git"
+  },
+  "keywords": [],
+  "author": "Máté Márk Csörnyei (mate@csornyei.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/csornyei/frontend-testing/issues"
+  },
+  "homepage": "https://github.com/csornyei/frontend-testing#readme"
+}
