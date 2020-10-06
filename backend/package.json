@@ -1,0 +1,30 @@
+{
+  "name": "frontend-testing-backend",
+  "version": "1.0.0",
+  "description": "Backend API for my thesis project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Csörnyei Máté (mate@csornyei.com)",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "chrome-launcher": "^0.13.4",
+    "chromedriver": "^85.0.1",
+    "chromium": "^3.0.2",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "helmet": "^4.1.1",
+    "lighthouse": "^6.3.0",
+    "mongodb": "^3.6.0",
+    "mongoose": "^5.10.2",
+    "puppeteer": "^5.2.1",
+    "yargs": "^15.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}

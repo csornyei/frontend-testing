@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="header">
+        <h1 class="header_text"> <%= title %> </h1>
+    </header>
+    <main class="container">
+        <div class="statsContainer">
+            <h3>Logs count: <%= logsAmount %></h3>
+            <ul>
+                <% distinctRoutes.map(route => { %>
+                    <li> <%= route._id %> ( <%= route.count %> ) </li>
+                <% }) %>
+            </ul>
+        </div>
+        <div>
+            <% logs.map(log => { %>
+                <div class="logContainer">
+                    <h2> <a target="_blank" rel="noopener noreferrer" href="<%= log.route %>"><%= log.route %></a> </h2>
+                    <h4> <%= log.date %> </h4>
+                </div>
+            <% }) %>
+        </div>
+    </main>
+</body>
+</html>
