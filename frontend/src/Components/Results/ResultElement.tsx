@@ -55,6 +55,15 @@ export default ({
         onShowDetailsClicked: () => void,
         showDetails: boolean
     }) => {
+    const scores = Object.keys(result.scores).map((score) => {
+        return (
+            <div key={score}>
+                <ResultProgress radius={60} progress={result.scores[score]} />
+                <ScoreTitle> {score} </ScoreTitle>
+                <ScoreValue> {result.scores[score]} </ScoreValue>
+            </div>
+        )
+    });
     return (
         <Container>
             <ResultTitleContainer>
@@ -62,31 +71,7 @@ export default ({
                 <ResultTitle> {format(new Date(result.date), 'yyyy-MM-ii HH:mm')} </ResultTitle>
             </ResultTitleContainer>
             <ScoreRow>
-                <div>
-                    <ResultProgress radius={60} progress={result.scores.Performance} />
-                    <ScoreTitle> Performance </ScoreTitle>
-                    <ScoreValue> {result.scores.Performance} </ScoreValue>
-                </div>
-                <div>
-                    <ResultProgress radius={60} progress={result.scores.Accessibility} />
-                    <ScoreTitle> Accessibility </ScoreTitle>
-                    <ScoreValue> {result.scores.Accessibility} </ScoreValue>
-                </div>
-                <div>
-                    <ResultProgress radius={60} progress={result.scores["Best Practices"]} />
-                    <ScoreTitle> Best Practices </ScoreTitle>
-                    <ScoreValue> {result.scores["Best Practices"]} </ScoreValue>
-                </div>
-                <div>
-                    <ResultProgress radius={60} progress={result.scores.SEO} />
-                    <ScoreTitle> SEO </ScoreTitle>
-                    <ScoreValue> {result.scores.SEO} </ScoreValue>
-                </div>
-                <div>
-                    <ResultProgress radius={60} progress={result.scores.PWA} />
-                    <ScoreTitle> PWA </ScoreTitle>
-                    <ScoreValue> {result.scores.PWA} </ScoreValue>
-                </div>
+                {scores}
             </ScoreRow>
             <ButtonSuccess title={'Show more'} style={{
                     width: '25%',

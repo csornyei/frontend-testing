@@ -16,6 +16,8 @@ const HighlightContainer = styled(Container)`
     margin: 24px 0;
 `;
 
+const shouldShowMetric = (metrics: ResultMetrics, metricKey: keyof ResultMetrics) => metrics[metricKey].length > 0;
+
 export default ({metrics}: {metrics: ResultMetrics}) => {
 
     const [selectedMetricKey, setSelectedMetricKey] = useState<keyof ResultMetrics | -1>(-1);
@@ -65,12 +67,14 @@ export default ({metrics}: {metrics: ResultMetrics}) => {
 
     const highlights = highlightMetrics.map((value) => {
         const { id, metricType } = value;
-        const metricIndex = metrics[metricType].findIndex((metric) => metric.id === id);
-        const metric = metrics[metricType][metricIndex]
-        return <HighlightElement key={id} title={metric.title} score={metric.score} onClick={() => {
-            setSelectedMetricKey(metricType);
-            addMetricToSelecteds(id, metricType);
-        }} />
+        if (shouldShowMetric(metrics, metricType)) {
+            const metricIndex = metrics[metricType].findIndex((metric) => metric.id === id);
+            const metric = metrics[metricType][metricIndex]
+            return <HighlightElement key={id} title={metric.title} score={metric.score} onClick={() => {
+                setSelectedMetricKey(metricType);
+                addMetricToSelecteds(id, metricType);
+            }} />
+        }
     });
 
     return (
@@ -79,11 +83,26 @@ export default ({metrics}: {metrics: ResultMetrics}) => {
                 {highlights}
             </HighlightContainer>
             <Container>
-                <MetricSelector title="Perfomance" onClick={() => selectMetricKey('performance')} />
-                <MetricSelector title="Accessibility" onClick={() => selectMetricKey('accessibility')} />
-                <MetricSelector title="Best Practices" onClick={() => selectMetricKey('best-practices')} />
-                <MetricSelector title="SEO" onClick={() => selectMetricKey('seo')} />
-                <MetricSelector title="PWA" onClick={() => selectMetricKey('pwa')} />
+                { shouldShowMetric(metrics, 'performance') ?
+                    <MetricSelector title="Perfomance" onClick={() => selectMetricKey('performance')} /> :
+                    null
+                }
+                { shouldShowMetric(metrics, 'accessibility') ?
+                    <MetricSelector title="Accessibility" onClick={() => selectMetricKey('accessibility')} /> :
+                    null
+                }
+                { shouldShowMetric(metrics, 'best-practices') ?
+                    <MetricSelector title="Best Practices" onClick={() => selectMetricKey('best-practices')} /> :
+                    null
+                }
+                { shouldShowMetric(metrics, 'seo') ?
+                    <MetricSelector title="SEO" onClick={() => selectMetricKey('seo')} /> :
+                    null
+                }
+                { shouldShowMetric(metrics, 'pwa') ?
+                    <MetricSelector title="PWA" onClick={() => selectMetricKey('pwa')} /> :
+                    null
+                }
             </Container>
             { selectedMetricKey === -1 ?
                 null :
