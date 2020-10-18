@@ -1,4 +1,4 @@
-import { Action, ActionType } from "../utils/types";
+import { Action, ActionType, TestRunnerRequestBody } from "../utils/types";
 
 
 export const fetchUrlsStart = (): Action => ({
@@ -31,9 +31,9 @@ export const selectURL = (url: string): Action => ({
     payload: url
 });
 
-export const runTestStart = (url: string): Action => ({
+export const runTestStart = (body: TestRunnerRequestBody): Action => ({
     type: ActionType.runTestStart,
-    payload: url
+    payload: body
 })
 
 export const runTestSuccess = (data: any): Action => ({

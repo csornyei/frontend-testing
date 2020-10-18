@@ -35,8 +35,9 @@ function* fetchResults(action: Action) {
 
 function* runTest(action: Action) {
     const {payload} = action;
+    console.log(payload);
     try {
-        const testResponse = yield axios.post('/api/results', {url: payload});
+        const testResponse = yield axios.post('/api/results', {...payload});
         const testData = yield testResponse.data;
         yield put(runTestSuccess(testData));
         yield put(fetchUrlsStart());

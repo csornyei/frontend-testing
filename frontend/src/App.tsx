@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import store from './State/store';
 
-import Controlls from './Components/Controlls';
+import TestRunner from './Components/TestRunner/TestRunner';
 import ResultList from './Components/Results/ResultList';
 
 const Container = styled.section`
@@ -18,7 +18,7 @@ function App() {
     <Provider store={store}>
       <main>
         <Container>
-          <Controlls />
+          <TestRunner />
         </Container>
         <Container>
           <ResultList />
