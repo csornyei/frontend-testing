@@ -34,6 +34,7 @@ type InputProps = {
     value: string,
     onChange: (event: string) => void,
     suggestions: string[],
+    disabled: boolean
 }
 
 export default ({
@@ -43,6 +44,7 @@ export default ({
     style,
     name,
     id,
+    disabled
 }: InputProps) => {
 
     const [filteredSuggestions, setFilteredSuggestions] = useState(suggestions);
@@ -72,7 +74,9 @@ export default ({
                 value={value}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
                 name={name}
-                id={id} />
+                id={id}
+                disabled={disabled}
+                />
             <div>
                 {showSuggestions ? filteredSuggestions.map(suggestion => (
                     <Suggestion

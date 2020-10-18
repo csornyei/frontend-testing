@@ -35,5 +35,6 @@ const Button = (
 
 export const ButtonSuccess = (props: ButtonProps) => <Button {...props} style={{...props.style, backgroundColor: '#81b214'}} />
 export const ButtonPrimary = (props: ButtonProps) => <Button {...props} style={{...props.style, backgroundColor: '#15bbed'}} />
+export const SmallButton = (props: ButtonProps) => <Button {...props} style={{...props.style, fontSize: 12, padding: '3px 4px'}} />
 
 export default Button;
