@@ -15,9 +15,47 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    // TODO - test if url is correct
-    const {url} = req.body;
-    const jsonReport = await testRunner.getJSONLighthouseReport(url).catch((reason) => {
+    const {url, categories, mobile, mobileDataSpeed, cookies} = req.body;
+
+    let throttlingSettings = undefined;
+    switch (mobileDataSpeed) {
+        case '2g':
+            throttlingSettings = {
+                throughputKbps: 200,
+                requestLatencyMs: 700
+            }
+            break;
+        case '3g':
+            throttlingSettings = {
+                throughputKbps: 2 * 1024,
+                requestLatencyMs: 200
+            }
+            break;
+        case '4g':
+            throttlingSettings = {
+                throughputKbps: 20 * 1024,
+                requestLatencyMs: 50
+            }
+            break;
+    }
+    const categoriesConfig = !!categories ? {onlyCategories: [...categories]} : {};
+    const config = {
+        extends: 'lighthouse:default',
+        settings: {
+            ...categoriesConfig,
+            emulatedFormFactor: mobile ? 'mobile' : 'desktop',
+            throttlingMethod: 'devtools',
+            throttling: throttlingSettings
+        }
+    }
+
+    const jsonReport = await testRunner.getJSONLighthouseReport(url, config, cookies).catch(async (reason) => {
+        await new Log({
+            date: Date.now(),
+            route: req.url,
+            ip: req.ip,
+            error: reason
+        }).save();
         res.status(500);
         res.send({
             "Error": "Error while generating lighthouse report"

@@ -1,25 +1,25 @@
 const chromeLauncher = require('chrome-launcher');
 const puppeteer = require('puppeteer');
 const lighthouse = require('lighthouse');
-const config = require('lighthouse/lighthouse-core/config/lr-desktop-config.js');
+const defautConfig = require('lighthouse/lighthouse-core/config/lr-desktop-config.js');
 const reportGenerator = require('lighthouse/lighthouse-core/report/report-generator');
 const request = require('request');
 const util = require('util');
 const chromium = require('chromium');
 require('chromedriver');
 
-exports.getJSONLighthouseReport = async (url) => {
+exports.getJSONLighthouseReport = async (url, customConfig, cookies) => {
     try {
         const options = {
             logLevel: 'error',
             output: 'json',
             chromePath: chromium.path,
-            disableDeviceEmulation: true,
+            disableDeviceEmulation: false,
             defaultViewport: {
                 width: 1200,
                 height: 900
             },
-            chromeFlags: ['--disable-mobile-emulation', '--headless']
+            chromeFlags: ['--headless']
         };
 
         const chrome = await chromeLauncher.launch(options);
@@ -34,11 +34,14 @@ exports.getJSONLighthouseReport = async (url) => {
             width: options.defaultViewport.width,
             height: options.defaultViewport.height
         });
+        const cookiesWithUrl = cookies.map(cookieObject => {
+            return {...cookieObject, url: url}
+        });
+        await page.setCookie(...cookiesWithUrl);
         await page.goto(url, {waitUntil: 'networkidle2'});
-
-        const report = await lighthouse(page.url(), options, config).then(results => results);
+        const lighthouseConfig = {...defautConfig, ...customConfig};
+        const report = await lighthouse(page.url(), options, lighthouseConfig).then(results => results);
         const json = reportGenerator.generateReport(report.lhr, 'json');
-
         await browser.disconnect();
         await chrome.kill();
         return json;
@@ -47,25 +50,46 @@ exports.getJSONLighthouseReport = async (url) => {
     }
 };
 
+const hasScore = (categories, key) =>  Object.keys(categories).indexOf(key) !== -1;
+
 exports.getLighthouseScores = (report) => {
-    const scores = {};
-    scores.Performance = report.categories.performance.score;
-    scores.Accessibility = report.categories.accessibility.score;
-    scores["Best Practices"] = report["categories"]["best-practices"]["score"];
-    scores.SEO = report.categories.seo.score;
-    scores.PWA = report.categories.pwa.score;
-    return scores;
+    try {
+        const scores = {};
+        if (hasScore(report.categories, 'performance')) {
+            scores.Performance = report.categories.performance.score;
+        }
+        if (hasScore(report.categories, 'accessibility')) {
+            scores.Accessibility = report.categories.accessibility.score;
+        }
+        if (hasScore(report.categories, 'best-practices')) {
+            scores["Best Practices"] = report.categories["best-practices"].score;
+        }
+        if (hasScore(report.categories, 'seo')) {
+            scores.SEO = report.categories.seo.score;
+        }
+        if (hasScore(report.categories, 'pwa')) {
+            scores.PWA = report.categories.pwa.score;
+        }
+        return scores;
+    } catch {
+        throw new Error('Error while getting lighthouse scores')
+    }
 };
 
 const getMetricsFromAuditRefs = (auditRefs, audits) => {
-    const metrics = [];
-    auditRefs.forEach(({id, weight}) => {
-        const audit = fixKeys(audits[id]);
-        metrics.push({
-            ...audit, weight
+    try {
+        const metrics = [];
+        auditRefs.forEach(({id, weight}) => {
+            const audit = fixKeys(audits[id]);
+            metrics.push({
+                ...audit, weight
+            });
         });
-    });
-    return metrics;
+        return metrics;
+    } catch {
+        throw new Error('Error while getting metrics from audits')
+    }
+
 };
 
 const isObject = (variable) => {

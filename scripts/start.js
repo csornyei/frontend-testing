@@ -8,7 +8,7 @@ const addEventListener = (proc, processName) => {
         if (code === 0) {
             console.log(`${processName} ran successfully`)
         } else {
-            console.log(`Code: ${code}`)
+            console.log(`${processName} - Code: ${code}`)
         }
     });
 }
