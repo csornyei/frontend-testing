@@ -30,8 +30,8 @@ export default () => {
 
     const buttonPressed = async () => {
         dispatch(runTestStart({
+            ...config,
             url: urlToTest,
-            config: config,
             cookies: cookies
         }));
     }

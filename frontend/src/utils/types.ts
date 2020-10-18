@@ -64,8 +64,7 @@ export type LighthouseConfig = {
     mobileDataSpeed?: '2g' | '3g' | '4g'
 };
 
-export type TestRunnerRequestBody = {
+export interface TestRunnerRequestBody extends LighthouseConfig {
     url: string,
-    config: LighthouseConfig,
     cookies: Cookie[]
 }

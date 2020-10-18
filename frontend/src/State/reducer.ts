@@ -22,7 +22,7 @@ export default (state = initialState, action: Action): State => {
         case ActionType.fetchResultsSuccess:
             return {...state, isFetching: false, results: action.payload}
         case ActionType.resultsApiError:
-            return {...state, isFetching: false, errorMessage: action.payload}
+            return {...state, isFetching: false, isRunningTest: false, errorMessage: action.payload}
         case ActionType.runTestStart:
             return {...state, isRunningTest: true}
         case ActionType.runTestSuccess:

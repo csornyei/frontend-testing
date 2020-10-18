@@ -16,7 +16,6 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const {url, categories, mobile, mobileDataSpeed, cookies} = req.body;
-
     let throttlingSettings = undefined;
     switch (mobileDataSpeed) {
         case '2g':
@@ -60,10 +59,27 @@ router.post('/', async (req, res) => {
         res.send({
             "Error": "Error while generating lighthouse report"
         });
+        return;
     });
-    const parsedReport = JSON.parse(jsonReport);
+    let parsedReport;
     try {
-        const results = new Result({
+        parsedReport = JSON.parse(jsonReport);
+    } catch (error) {
+        await new Log({
+            date: Date.now(),
+            route: req.url,
+            ip: req.ip,
+            error: error
+        }).save();
+        res.status(500);
+        res.send({
+            "Error": "Error while parsing report"
+        });
+        return;
+    }
+    let results;
+    try {
+        results = new Result({
             date: Date.now(),
             url: parsedReport.finalUrl,
             scores: {
@@ -73,18 +89,36 @@ router.post('/', async (req, res) => {
                 ...testRunner.getMetrics(parsedReport)
             }
         })
+    } catch (error) {
+        await new Log({
+            date: Date.now(),
+            route: req.url,
+            ip: req.ip,
+            error: error
+        }).save();
+        res.status(500);
+        res.send({
+            ...error,
+            "Error": "Error while creating result object"
+        });
+        return;
+    }
+    try {
         await results.save();
-        res.send(results)
+        res.send(results);
     } catch (e) {
-        const log = new Log({
+        await new Log({
             date: Date.now(),
             route: req.url,
             ip: req.ip,
             error: e
-        });
-        await log.save();
+        }).save();
         res.status(500);
-        res.send(e);
+        res.send({
+            ...e,
+            "Error": "Error while saving to database"
+        });
+        return;
     }
 
 
