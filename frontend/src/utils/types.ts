@@ -51,4 +51,21 @@ export type Result = {
 export type MetricIdWithType = {
     id: string,
     metricType: keyof ResultMetrics
+};
+
+export type Cookie = {
+    name: string,
+    value: string
+};
+
+export type LighthouseConfig = {
+    categories: string[],
+    mobile: boolean,
+    mobileDataSpeed?: '2g' | '3g' | '4g'
+};
+
+export type TestRunnerRequestBody = {
+    url: string,
+    config: LighthouseConfig,
+    cookies: Cookie[]
 }

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import { ButtonSuccess, SmallButton } from '../Common/Button';
+import { Cookie, LighthouseConfig } from '../../utils/types';
 
 type SelectedCategories = {
     performance: boolean,
@@ -8,11 +9,6 @@ type SelectedCategories = {
     "best-practices": boolean,
     seo: boolean,
     pwa: boolean
-};
-
-type Cookie = {
-    name: string,
-    value: string
 };
 
 const FlexRowDiv = styled.div`
@@ -71,7 +67,17 @@ const SetCookieName = styled.span`
     font-weight: bold;
 `;
 
-export default ({disabled}: {disabled: boolean}) => {
+type Props = {
+    disabled: boolean,
+    cookies: Cookie[],
+    setCookies: React.Dispatch<React.SetStateAction<Cookie[]>>,
+    config: LighthouseConfig,
+    setConfig: React.Dispatch<React.SetStateAction<LighthouseConfig>>
+}
+
+type NetworkSpeed = 'none' | '2g' | '3g' | '4g';
+
+export default ({disabled, cookies, setCookies, config, setConfig}: Props) => {
 
     const [selectedCategories, setSelectedCategories] = useState<SelectedCategories>({
         performance: true,
@@ -81,12 +87,11 @@ export default ({disabled}: {disabled: boolean}) => {
         pwa: true
     });
     const [mobile, setMobile] = useState(false);
-    const [networkSpeed, setNetworkSpeed] = useState('none');
+    const [networkSpeed, setNetworkSpeed] = useState<NetworkSpeed>('none');
     const [editedCookie, setEditedCookie] = useState<Cookie>({
         name: '',
         value: ''
     });
-    const [cookies, setCookies] = useState<Cookie[]>([]);
 
 
     const changeSelectedCategory = (category: keyof SelectedCategories) => {
@@ -126,7 +131,23 @@ export default ({disabled}: {disabled: boolean}) => {
         if (!mobile) {
             setNetworkSpeed('none');
         }
+        setConfig({...config, mobile});
     }, [mobile]);
+
+    useEffect(() => {
+        const newConfig = {...config};
+        if (networkSpeed === 'none') {
+            delete newConfig.mobileDataSpeed;
+        } else {
+            newConfig.mobileDataSpeed = networkSpeed;
+        }
+        setConfig(newConfig);
+    }, [networkSpeed]);
+
+    useEffect(() => {
+        const categories = Object.keys(selectedCategories).filter(cat => selectedCategories[cat as keyof SelectedCategories]);
+        setConfig({...config, categories});
+    }, [selectedCategories]);
 
     return (
         <>
@@ -195,7 +216,7 @@ export default ({disabled}: {disabled: boolean}) => {
                     name="networkSpeed"
                     id="networkSpeedSelector"
                     value={networkSpeed}
-                    onChange={(event) => {setNetworkSpeed(event.target.value)}} >
+                    onChange={(event) => {setNetworkSpeed(event.target.value as NetworkSpeed)}} >
                         <option value="none">Default</option>
                         <option value="2g">2G</option>
                         <option value="3g">3G</option>

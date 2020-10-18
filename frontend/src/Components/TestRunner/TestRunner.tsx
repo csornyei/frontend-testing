@@ -6,7 +6,7 @@ import TestControlls from './TestControlls';
 import { ButtonSuccess } from '../Common/Button';
 import { runTestStart } from '../../State/actions';
 import LoadingSpinner from '../LoadingSpinner';
-import { State } from '../../utils/types';
+import { Cookie, LighthouseConfig, State } from '../../utils/types';
 
 const ControllsContainer = styled.div`
     margin-top: 24px;
@@ -16,19 +16,30 @@ const ControllsContainer = styled.div`
     flex-direction: column;
 `;
 
+const defaultLighthouseConfig : LighthouseConfig = {
+    categories: ['performance', 'accessibility', 'best-practices', 'seo', 'pwa'],
+    mobile: false,
+}
+
 export default () => {
     const dispatch = useDispatch();
     const [urlToTest, setUrlToTest] = useState('');
+    const [config, setConfig] = useState<LighthouseConfig>(defaultLighthouseConfig)
+    const [cookies, setCookies] = useState<Cookie[]>([]);
     const {isRunningTest} = useSelector((state: State) => state);
 
     const buttonPressed = async () => {
-        dispatch(runTestStart(urlToTest));
+        dispatch(runTestStart({
+            url: urlToTest,
+            config: config,
+            cookies: cookies
+        }));
     }
 
     return (
         <ControllsContainer>
             <UrlInput urlValue={urlToTest} setUrl={setUrlToTest} disabled={isRunningTest}  />
-            <TestControlls disabled={isRunningTest} />
+            <TestControlls disabled={isRunningTest} cookies={cookies} setCookies={setCookies} config={config} setConfig={setConfig} />
             {isRunningTest ?
             <LoadingSpinner /> :
             <ButtonSuccess onClick={buttonPressed} title="Run test" style={{width: '10%', alignSelf: 'center'}} />
