@@ -4,7 +4,7 @@
   "description": "Backend API for my thesis project",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node index.js server",
     "dev": "nodemon index.js"
   },
   "author": "Csörnyei Máté (mate@csornyei.com)",
@@ -22,7 +22,7 @@
     "mongodb": "^3.6.0",
     "mongoose": "^5.10.2",
     "puppeteer": "^5.2.1",
-    "yargs": "^15.4.1"
+    "yargs": "^16.1.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

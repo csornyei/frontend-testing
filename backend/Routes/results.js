@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Result = require("../models/testResult");
-const Log = require("../models/logs");
+const { getAllResults, createTestConfig, createResult, getResultUrls, getResultByID } = require('../controllers/resultsController');
+const { createErrorLog } = require('../controllers/logController');
 const testRunner = require("../scripts/runTest");
 
 router.get('/', async (req, res) => {
@@ -10,51 +10,14 @@ router.get('/', async (req, res) => {
     if (url) {
         filters.url = url;
     }
-    const results = await Result.find(filters);
-    res.send(results);
+    res.send(await getAllResults(filters));
 });
 
 router.post('/', async (req, res) => {
     const {url, categories, mobile, mobileDataSpeed, cookies} = req.body;
-    let throttlingSettings = undefined;
-    switch (mobileDataSpeed) {
-        case '2g':
-            throttlingSettings = {
-                throughputKbps: 200,
-                requestLatencyMs: 700
-            }
-            break;
-        case '3g':
-            throttlingSettings = {
-                throughputKbps: 2 * 1024,
-                requestLatencyMs: 200
-            }
-            break;
-        case '4g':
-            throttlingSettings = {
-                throughputKbps: 20 * 1024,
-                requestLatencyMs: 50
-            }
-            break;
-    }
-    const categoriesConfig = !!categories ? {onlyCategories: [...categories]} : {};
-    const config = {
-        extends: 'lighthouse:default',
-        settings: {
-            ...categoriesConfig,
-            emulatedFormFactor: mobile ? 'mobile' : 'desktop',
-            throttlingMethod: 'devtools',
-            throttling: throttlingSettings
-        }
-    }
-
-    const jsonReport = await testRunner.getJSONLighthouseReport(url, config, cookies).catch(async (reason) => {
-        await new Log({
-            date: Date.now(),
-            route: req.url,
-            ip: req.ip,
-            error: reason
-        }).save();
+    const config = createTestConfig(categories, mobile, mobileDataSpeed);
+    const jsonReport = await testRunner.getJSONLighthouseReport(url, config, cookies).catch((error) => {
+        createErrorLog(req.url, req.ip, error);
         res.status(500);
         res.send({
             "Error": "Error while generating lighthouse report"
@@ -65,37 +28,17 @@ router.post('/', async (req, res) => {
     try {
         parsedReport = JSON.parse(jsonReport);
     } catch (error) {
-        await new Log({
-            date: Date.now(),
-            route: req.url,
-            ip: req.ip,
-            error: error
-        }).save();
+        createErrorLog(req.url, req.ip, error);
         res.status(500);
         res.send({
             "Error": "Error while parsing report"
         });
         return;
     }
-    let results;
     try {
-        results = new Result({
-            date: Date.now(),
-            url: parsedReport.finalUrl,
-            scores: {
-                ...testRunner.getLighthouseScores(parsedReport)
-            },
-            metrics: {
-                ...testRunner.getMetrics(parsedReport)
-            }
-        })
+        res.send(await createResult(parsedReport));
     } catch (error) {
-        await new Log({
-            date: Date.now(),
-            route: req.url,
-            ip: req.ip,
-            error: error
-        }).save();
+        createErrorLog(req.url, req.ip, error);
         res.status(500);
         res.send({
             ...error,
@@ -103,39 +46,13 @@ router.post('/', async (req, res) => {
         });
         return;
     }
-    try {
-        await results.save();
-        res.send(results);
-    } catch (e) {
-        await new Log({
-            date: Date.now(),
-            route: req.url,
-            ip: req.ip,
-            error: e
-        }).save();
-        res.status(500);
-        res.send({
-            ...e,
-            "Error": "Error while saving to database"
-        });
-        return;
-    }
-
-
 });
 
 router.get('/urls', async (req, res) => {
     try {
-        const result = await Result.distinct('url');
-        res.send(result);
+        res.send(await getResultUrls());
     } catch(error) {
-        const log = new Log({
-            date: Date.now(),
-            route: req.url,
-            ip: req.ip,
-            error: error
-        });
-        await log.save();
+        createErrorLog(req.url, req.ip, error)
         res.status(500);
         res.send({error: "Server Error"});
     }
@@ -143,7 +60,7 @@ router.get('/urls', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const result = await Result.findOne({_id: req.params.id});
+        const result = await getResultByID(req.params.id);
         if (result == null) {
             res.status(404);
             res.send({error: "Result doesn't exists!"})
