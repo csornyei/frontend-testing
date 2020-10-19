@@ -68,7 +68,7 @@ export default ({
         <Container>
             <ResultTitleContainer>
                 <ResultTitle> {result.url} </ResultTitle>
-                <ResultTitle> {format(new Date(result.date), 'yyyy-MM-ii HH:mm')} </ResultTitle>
+                <ResultTitle> {format(new Date(result.date), 'yyyy-MM-dd HH:mm')} </ResultTitle>
             </ResultTitleContainer>
             <ScoreRow>
                 {scores}

@@ -22,7 +22,7 @@ export default () => {
     useEffect(() => {
         setChartData(results
             .map((result) => ({
-                date: format(new Date(result.date), 'yyyy-MM-ii HH:mm'),
+                date: format(new Date(result.date), 'yyyy-MM-dd HH:mm'),
                 ...result.scores
             }))
             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()))
