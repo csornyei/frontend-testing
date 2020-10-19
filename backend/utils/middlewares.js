@@ -1,16 +1,11 @@
-const Log = require('../models/logs');
+const { createSimpleLog } = require('../controllers/logController');
 
-const logger = async (req, _, next) => {
-    const log = new Log({
-        date: Date.now(),
-        route: req.url,
-        ip: req.ip
-    });
-    log.save();
-    next()
+const logger = (req, _, next) => {
+    createSimpleLog(req.url, req.ip);
+    next();
 }
 
-const cors = async (req, res, next) => {
+const cors = async (_, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
