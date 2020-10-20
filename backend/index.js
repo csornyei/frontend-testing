@@ -1,8 +1,10 @@
 const yargs = require('yargs/yargs');
+const path = require('path');
+const fs = require('fs');
 const { hideBin } = require('yargs/helpers');
 const { connectToDatabase } = require('./utils/database');
 const { startServer } = require('./server');
-const { createTestConfig, createResult } = require('./controllers/resultsController');
+const { createTestConfig, extendConfigFile, createResult } = require('./controllers/resultsController');
 const { getJSONLighthouseReport } = require('./scripts/runTest');
 
 const argv = yargs(hideBin(process.argv))
@@ -49,18 +51,31 @@ const argv = yargs(hideBin(process.argv))
     }).help()
     }, async (argv) => {
         await connectToDatabase();
-        console.log(argv);
-        const cookies = !!argv.cookies ? argv.cookies.map(cookie => {
+        let config;
+        let configCookies = [];
+        if (!!argv.file) {
+            if (!fs.existsSync(argv.file)) {
+                console.error('The config file not exists', argv.file);
+                process.exit(1)
+            }
+            const configJSON = fs.readFileSync(argv.file);
+            const parsedConfig = JSON.parse(configJSON);
+            config = extendConfigFile(parsedConfig);
+            configCookies = !!parsedConfig.cookies ? parsedConfig.cookies : [];
+        } else {
+            const categories = !!argv.categories ? argv.categories : [];
+            const mobile = !!argv.mobile ? argv.mobile : false;
+            const speed = !!argv.speed ? argv.speed : 'none'
+            config = createTestConfig(categories, mobile, speed);
+        }
+        const cookies = !!argv.cookies ? [ ...configCookies, ...argv.cookies.map(cookie => {
             const nameValArr = cookie.split('=');
             return {
                 name: nameValArr[0],
                 value: nameValArr[1]
             };
-        }) : [];
-        const categories = !!argv.categories ? argv.categories : [];
-        const mobile = !!argv.mobile ? argv.mobile : false;
-        const speed = !!argv.speed ? argv.speed : 'none'
-        const config = createTestConfig(categories, mobile, speed);
+        }).filter(cookie => cookie.name && cookie.value)] : [];
+
         try {
             console.log('Running the test...');
             const report = await getJSONLighthouseReport(argv.url, config, cookies);
