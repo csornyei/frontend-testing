@@ -5,28 +5,28 @@ const getAllResults = (filters = {}) => {
     return Result.find(filters);
 }
 
-const createTestConfig = (categories = undefined, mobile = false, mobileDataSpeed = 'none') => {
-    let throttlingSettings = undefined;
+const getThrottlingSettings = (mobileDataSpeed = 'none') => {
     switch (mobileDataSpeed) {
         case '2g':
-            throttlingSettings = {
+            return {
                 throughputKbps: 200,
                 requestLatencyMs: 700
             }
-            break;
         case '3g':
-            throttlingSettings = {
+            return {
                 throughputKbps: 2 * 1024,
                 requestLatencyMs: 200
             }
-            break;
         case '4g':
-            throttlingSettings = {
+            return {
                 throughputKbps: 20 * 1024,
                 requestLatencyMs: 50
             }
-            break;
+        default: return undefined
     }
+}
+
+const createTestConfig = (categories = undefined, mobile = false, mobileDataSpeed = 'none') => {
     const categoriesConfig = !!categories ? {onlyCategories: [...categories]} : {};
     return {
         extends: 'lighthouse:default',
@@ -34,7 +34,20 @@ const createTestConfig = (categories = undefined, mobile = false, mobileDataSpee
             ...categoriesConfig,
             emulatedFormFactor: mobile ? 'mobile' : 'desktop',
             throttlingMethod: 'devtools',
-            throttling: throttlingSettings
+            throttling: getThrottlingSettings(mobileDataSpeed)
+        }
+    }
+}
+
+const extendConfigFile = (configData = {onlyCategories: {}, mobile: false, mobileDataSpeed: 'none'}) => {
+    console.log(configData);
+    return {
+        extends: 'lighthouse:default',
+        settings: {
+            onlyCategories: [...configData.onlyCategories],
+            emulatedFormFactor: configData.mobile ? 'mobile' : 'desktop',
+            throttlingMethod: 'devtools',
+            throttling: getThrottlingSettings(configData.mobileDataSpeed)
         }
     }
 }
@@ -63,6 +76,7 @@ const getResultByID = (id) => {
 module.exports = {
     getAllResults,
     createTestConfig,
+    extendConfigFile,
     createResult,
     getResultUrls,
     getResultByID
