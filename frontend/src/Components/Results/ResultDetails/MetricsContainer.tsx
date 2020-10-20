@@ -10,6 +10,7 @@ const Container = styled.div`
 `;
 
 export default ({metrics, selectedMetrics, onMetricClicked}: {metrics: any[], selectedMetrics: MetricIdWithType[], onMetricClicked: (metric: string) => void}) => {
+
     return (
         <Container>
             {metrics.map(metric => {

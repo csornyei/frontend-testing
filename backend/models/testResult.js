@@ -16,7 +16,9 @@ const schema = mongoose.Schema({
         "best-practices": Array,
         "seo": Array,
         "pwa": Array
-    }
+    },
+    config: Object,
+    cookies: Array
 })
 
 module.exports = mongoose.model("TestResult", schema);

@@ -22,6 +22,8 @@ export default () => {
     const dispatch = useDispatch();
     const { selectedUrl, urls, isRunningTest } = useSelector((state: State) => state)
 
+    // TODO - filter by config and cookies
+
     useEffect(() => {
         dispatch(fetchUrlsStart());
     }, [dispatch]);
