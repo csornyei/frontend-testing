@@ -52,7 +52,7 @@ const extendConfigFile = (configData = {onlyCategories: {}, mobile: false, mobil
     }
 }
 
-const createResult = (report) => {
+const createResult = (report, config, cookies) => {
     return new Result({
         date: Date.now(),
         url: report.finalUrl,
@@ -61,7 +61,13 @@ const createResult = (report) => {
         },
         metrics: {
             ...getMetrics(report)
-        }
+        },
+        config: {
+            ...config
+        },
+        cookies: [
+            ...cookies
+        ]
     }).save();
 }
 

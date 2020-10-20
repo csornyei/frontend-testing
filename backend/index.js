@@ -82,7 +82,7 @@ const argv = yargs(hideBin(process.argv))
             console.log('Parsing the result...');
             const parsedReport = JSON.parse(report);
             console.log('Saving the result...');
-            await createResult(parsedReport);
+            await createResult(parsedReport, config, cookies);
             console.log('Done')
         } catch (error) {
             console.error('There was an error while running the test...');

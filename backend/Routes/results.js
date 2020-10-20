@@ -36,7 +36,7 @@ router.post('/', async (req, res) => {
         return;
     }
     try {
-        res.send(await createResult(parsedReport));
+        res.send(await createResult(parsedReport, config, cookies));
     } catch (error) {
         createErrorLog(req.url, req.ip, error);
         res.status(500);
