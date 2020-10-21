@@ -34,9 +34,7 @@ exports.getJSONLighthouseReport = async (url, customConfig, cookies) => {
             width: options.defaultViewport.width,
             height: options.defaultViewport.height
         });
-        const cookiesWithUrl = cookies.map(cookieObject => {
-            return {...cookieObject, url: url}
-        });
+        const cookiesWithUrl = cookies.map(cookieObject => ({...cookieObject, url: url}));
         await page.setCookie(...cookiesWithUrl);
         await page.goto(url, {waitUntil: 'networkidle2'});
         const lighthouseConfig = {...defautConfig, ...customConfig};

@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { getAllResults, createTestConfig, createResult, getResultUrls, getResultByID } = require('../controllers/resultsController');
+const { getAllResults, createTestConfig, createResult, getResultUrls, getResultByID, getCookiesByUrl } = require('../controllers/resultsController');
 const { createErrorLog } = require('../controllers/logController');
 const testRunner = require("../scripts/runTest");
 
 router.get('/', async (req, res) => {
     const url = req.query.url;
-    const filters = {}
+    const filters = {};
+    // TODO - config and cookie filter
     if (url) {
         filters.url = url;
     }
@@ -47,6 +48,26 @@ router.post('/', async (req, res) => {
         return;
     }
 });
+
+router.get('/cookies/', async (req, res) => {
+    const url = req.query.url;
+    if (url === undefined) {
+        res.status(400);
+        res.send({
+            "Error": "Please send an url"
+        })
+        return;
+    }
+    try {
+        const cookies = await getCookiesByUrl(url)
+        res.send(cookies);
+    } catch (error) {
+        res.status(500);
+        res.send({
+            "Error": "Server error"
+        })
+    }
+})
 
 router.get('/urls', async (req, res) => {
     try {

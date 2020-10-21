@@ -79,11 +79,22 @@ const getResultByID = (id) => {
     return Result.findOne({_id: id});
 }
 
+const getCookiesByUrl = (url) => {
+    return Result.aggregate([
+        {$match: {url: url}},
+        {$project: {cookies: 1}},
+        {$unwind: "$cookies"},
+        {$group: {_id: {name: "$cookies.name"}, values: { $addToSet: "$cookies.value"}}},
+        {$project: {'name': "$_id.name", values: 1, _id: 0}}
+    ]);
+}
+
 module.exports = {
     getAllResults,
     createTestConfig,
     extendConfigFile,
     createResult,
     getResultUrls,
-    getResultByID
+    getResultByID,
+    getCookiesByUrl
 };

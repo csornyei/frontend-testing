@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js server",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js server"
   },
   "author": "Csörnyei Máté (mate@csornyei.com)",
   "license": "ISC",
