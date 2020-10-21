@@ -1,9 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { format } from 'date-fns';
 import ResultProgress from './ResultProgress';
 import { ButtonSuccess } from '../Common/Button';
 import ResultDetails from './ResultDetails/ResultDetails';
+import { State } from '../../utils/types';
+import LoadingSpinner from '../LoadingSpinner';
 
 const Container = styled.div`
     width: 75%;
@@ -46,6 +49,14 @@ const ScoreValue = styled.h4`
     text-align: center
 `;
 
+const MetricsContainer = ({metrics, isLoading}: {metrics: any, isLoading: boolean}) => {
+        if (isLoading) {
+            return <LoadingSpinner />
+        } else {
+            return <ResultDetails metrics={metrics} />
+        }
+}
+
 export default ({
         result,
         onShowDetailsClicked,
@@ -55,6 +66,7 @@ export default ({
         onShowDetailsClicked: () => void,
         showDetails: boolean
     }) => {
+    const { isFetchingOneResult, detailedResult } = useSelector((state: State) => state);
     const scores = Object.keys(result.scores).map((score) => {
         return (
             <div key={score}>
@@ -64,6 +76,7 @@ export default ({
             </div>
         )
     });
+
     return (
         <Container>
             <ResultTitleContainer>
@@ -79,7 +92,7 @@ export default ({
                     marginTop: '16px'
                 }}
                 onClick={onShowDetailsClicked} />
-            {showDetails ? <ResultDetails metrics={result.metrics} /> : null}
+            {showDetails ? <MetricsContainer isLoading={isFetchingOneResult} metrics={detailedResult?.metrics} /> : null}
         </Container>
     )
 }

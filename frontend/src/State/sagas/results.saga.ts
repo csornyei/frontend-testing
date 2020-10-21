@@ -8,8 +8,11 @@ import {
     fetchUrlsSuccess,
     fetchResultError,
     fetchResultsSuccess,
+    fetchOneResultSuccess,
+    fetchCookiesSuccess,
+    fetchFilteredResultsSuccess,
     runTestSuccess } from "../actions";
-import { takeEvery, put } from "redux-saga/effects";
+import { takeEvery, put, takeLatest } from "redux-saga/effects";
 import axios from '../../utils/axios';
 
 function* fetchUrls(action: Action) {
@@ -22,12 +25,43 @@ function* fetchUrls(action: Action) {
     }
 }
 
+function* fetchCookies(action: Action) {
+    try {
+        const response = yield axios.get(`/api/results/cookies`)
+        const result = yield response.data;
+        yield put(fetchCookiesSuccess(result))
+    } catch (error) {
+        yield put(fetchResultError(error));
+    }
+}
+
 function* fetchResults(action: Action) {
     const query = action.payload !== undefined ? `?url=${action.payload}` : ''
     try {
         const resultsResponse = yield axios.get(`/api/results${query}`);
         const results = yield resultsResponse.data;
         yield put(fetchResultsSuccess(results));
+    } catch (error) {
+        yield put(fetchResultError(error));
+    }
+}
+
+function* fetchFilteredResult(action: Action) {
+    try {
+        const response = yield axios.get(`/api/results/filtered${action.payload}`)
+        const result = yield response.data;
+        yield put(fetchFilteredResultsSuccess(result))
+    } catch (error) {
+        yield put(fetchResultError(error));
+    }
+}
+
+function* fetchOneResult(action: Action) {
+    try {
+        const response = yield axios.get(`/api/results/${action.payload}`)
+        const result = yield response.data;
+        console.log(result)
+        yield put(fetchOneResultSuccess(result))
     } catch (error) {
         yield put(fetchResultError(error));
     }
@@ -49,6 +83,9 @@ function* runTest(action: Action) {
 
 export default function* watchFetchResultsSagas() {
     yield takeEvery(ActionType.fetchUrlsStart, fetchUrls);
-    yield takeEvery(ActionType.fetchResultsStart, fetchResults);
+    yield takeLatest(ActionType.fetchCookiesStart, fetchCookies);
+    yield takeEvery(ActionType.fetchAllResultsStart, fetchResults);
     yield takeEvery(ActionType.runTestStart, runTest);
+    yield takeLatest(ActionType.fetchFilteredResultsStart, fetchFilteredResult);
+    yield takeLatest(ActionType.fetchOneResultStart, fetchOneResult);
 }

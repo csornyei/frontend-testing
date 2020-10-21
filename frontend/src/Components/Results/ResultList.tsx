@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import ResultElement from './ResultElement';
 import ResultControlls from './ResultControlls';
 import ResultChart from './ResultChart';
@@ -7,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { State } from '../../utils/types';
 import styled from 'styled-components';
 import { NOT_SELECTED_URL_VALUE } from '../../utils/constants';
+import { fetchOneResultStart } from '../../State/actions';
 
 const ResultsContainer = styled.div`
     margin-top: 32px
@@ -14,7 +16,8 @@ const ResultsContainer = styled.div`
 
 export default () => {
     const { results, isFetching, selectedUrl } = useSelector((state: State) => state);
-    const [showingDetails, setShowingDetails] = useState(0);
+    const [showingDetails, setShowingDetails] = useState(-1);
+    const dispatch = useDispatch();
 
     const resultElements = () => {
         if (results.length > 0) {
@@ -25,6 +28,7 @@ export default () => {
                 if (idx === showingDetails) {
                     setShowingDetails(-1)
                 } else {
+                    dispatch(fetchOneResultStart(result._id))
                     setShowingDetails(idx)
                 }
             }}

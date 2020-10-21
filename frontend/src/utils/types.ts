@@ -2,8 +2,14 @@ export enum ActionType {
     selectURL = "SELECT_URL",
     fetchUrlsStart = "FETCH_URLS_START",
     fetchUrlsSuccess = "FETCH_URLS_SUCCESS",
-    fetchResultsStart = "FETCH_RESULTS_START",
-    fetchResultsSuccess = "FETCH_RESULTS_SUCCESS",
+    fetchCookiesStart = "FETCH_COOKIES_START",
+    fetchCookiesSuccess = "FETCH_COOKIES_SUCCESS",
+    fetchAllResultsStart = "FETCH_ALL_RESULTS_START",
+    fetchAllResultsSuccess = "FETCH_ALL_RESULTS_SUCCESS",
+    fetchFilteredResultsStart = "FETCH_FILTERED_RESULTS_START",
+    fetchFilteredResultsSuccess = "FETCH_FILTERED_RESULTS_SUCCESS",
+    fetchOneResultStart = "FETCH_ONE_RESULT_START",
+    fetchOneResultSuccess = "FETCH_ONE_RESULT_SUCCESS",
     resultsApiError = "RESULTS_API_ERROR",
     runTestStart = 'RUN_TEST_START',
     runTestSuccess = 'RUN_TEST_SUCCESS',
@@ -17,10 +23,13 @@ export type Action = {
 export interface State {
     selectedUrl: string;
     isFetching: boolean;
+    isFetchingOneResult: boolean;
     isRunningTest: boolean;
     urls: string[];
     results: Result[];
-    errorMessage: any
+    errorMessage: any;
+    cookies: any[];
+    detailedResult: DetailedResult | null,
 };
 
 export type ResultScores = {
@@ -44,9 +53,16 @@ export type Result = {
     url: string,
     __v: number,
     _id: string,
+    config: [],
+    cookies: [],
     metrics: ResultMetrics,
     scores: ResultScores
 };
+
+export interface DetailedResult extends Result {
+    metrics: ResultMetrics,
+    scores: ResultScores
+}
 
 export type MetricIdWithType = {
     id: string,

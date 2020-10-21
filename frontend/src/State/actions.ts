@@ -11,13 +11,43 @@ export const fetchUrlsSuccess = (data: string[]): Action => ({
     payload: data
 });
 
+export const fetchCookiesStart = (): Action => ({
+    type: ActionType.fetchCookiesStart,
+    payload: null
+});
+
+export const fetchCookiesSuccess = (data: any[]): Action => ({
+    type: ActionType.fetchCookiesSuccess,
+    payload: data
+});
+
 export const fetchResultsStart = (url?: string): Action => ({
-    type: ActionType.fetchResultsStart,
+    type: ActionType.fetchAllResultsStart,
     payload: url
 });
 
 export const fetchResultsSuccess = (data: any): Action => ({
-    type: ActionType.fetchResultsSuccess,
+    type: ActionType.fetchAllResultsSuccess,
+    payload: data
+});
+
+export const fetchFilteredResultsStart = (filters: any[]): Action => ({
+    type: ActionType.fetchFilteredResultsStart,
+    payload: filters
+});
+
+export const fetchFilteredResultsSuccess = (data: any): Action => ({
+    type: ActionType.fetchFilteredResultsSuccess,
+    payload: data
+});
+
+export const fetchOneResultStart = (id: string): Action => ({
+    type: ActionType.fetchOneResultStart,
+    payload: id
+});
+
+export const fetchOneResultSuccess = (data: any): Action => ({
+    type: ActionType.fetchOneResultSuccess,
     payload: data
 });
 
