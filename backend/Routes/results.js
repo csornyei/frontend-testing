@@ -1,17 +1,53 @@
 const express = require('express');
 const router = express.Router();
-const { getAllResults, createTestConfig, createResult, getResultUrls, getResultByID, getCookiesByUrl } = require('../controllers/resultsController');
+const { getAllResults, getFilteredResults, createTestConfig, createResult, getResultUrls, getResultByID, getCookiesByUrl, getThrottlingSettings } = require('../controllers/resultsController');
 const { createErrorLog } = require('../controllers/logController');
 const testRunner = require("../scripts/runTest");
 
 router.get('/', async (req, res) => {
-    const url = req.query.url;
-    const filters = {};
-    // TODO - config and cookie filter
+    const {
+        url
+    } = req.query;
+    let filters = {};
     if (url) {
         filters.url = url;
     }
     res.send(await getAllResults(filters));
+});
+
+router.get('/filtered', async (req, res) => {
+    const {
+        url,
+        categories,
+        mobile,
+        dataSpeed,
+        cookies
+    } = req.query;
+    const filters = [];
+    if (!!url) {
+        filters.push({$match: {url:url}});
+    }
+    if (!!categories) {
+        const categoriesArray = categories.split(',');
+        filters.push({$match: {"config.settings.onlyCategories": { $all: categoriesArray}}})
+    }
+    if (!!mobile) {
+        filters.push({$match: {"config.settings.emulatedFormFactor": mobile === "mobile" ? "mobile" : "desktop"}});
+    }
+    if (!!dataSpeed) {
+        filters.push({$match: {"config.settings.throttling": getThrottlingSettings(dataSpeed) }});
+    }
+    if (!!cookies) {
+        const cookiesObject = cookies.split(',').map(cookieString => {
+            const splittedCookie = cookieString.split("=");
+            return {
+                name: splittedCookie[0],
+                value: splittedCookie[1]
+            }
+        });
+        filters.push({$match: {"cookies": {$all: cookiesObject}}})
+    }
+    res.send(await getFilteredResults(filters));
 });
 
 router.post('/', async (req, res) => {
@@ -38,6 +74,7 @@ router.post('/', async (req, res) => {
     }
     try {
         res.send(await createResult(parsedReport, config, cookies));
+        return;
     } catch (error) {
         createErrorLog(req.url, req.ip, error);
         res.status(500);

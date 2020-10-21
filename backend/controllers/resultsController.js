@@ -5,6 +5,13 @@ const getAllResults = (filters = {}) => {
     return Result.find(filters);
 }
 
+const getFilteredResults = (matches) => {
+    return Result.aggregate([
+        {$project: {url: 1, scores: 1, date: 1, config: 1, cookies: 1}},
+        ...matches
+    ])
+}
+
 const getThrottlingSettings = (mobileDataSpeed = 'none') => {
     switch (mobileDataSpeed) {
         case '2g':
@@ -91,10 +98,12 @@ const getCookiesByUrl = (url) => {
 
 module.exports = {
     getAllResults,
+    getFilteredResults,
     createTestConfig,
     extendConfigFile,
     createResult,
     getResultUrls,
     getResultByID,
-    getCookiesByUrl
+    getCookiesByUrl,
+    getThrottlingSettings
 };
