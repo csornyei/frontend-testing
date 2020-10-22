@@ -74,6 +74,8 @@ export type Cookie = {
     value: string
 };
 
+export type NetworkSpeed = 'none' | '2g' | '3g' | '4g';
+
 export type LighthouseConfig = {
     categories: string[],
     mobile: boolean,

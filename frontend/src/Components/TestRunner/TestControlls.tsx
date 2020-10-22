@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import { ButtonSuccess, SmallButton } from '../Common/Button';
-import { Cookie, LighthouseConfig } from '../../utils/types';
+import { Cookie, LighthouseConfig, NetworkSpeed } from '../../utils/types';
 
 type SelectedCategories = {
     performance: boolean,
@@ -74,8 +74,6 @@ type Props = {
     config: LighthouseConfig,
     setConfig: React.Dispatch<React.SetStateAction<LighthouseConfig>>
 }
-
-type NetworkSpeed = 'none' | '2g' | '3g' | '4g';
 
 export default ({disabled, cookies, setCookies, config, setConfig}: Props) => {
 
