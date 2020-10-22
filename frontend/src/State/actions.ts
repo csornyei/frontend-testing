@@ -11,9 +11,9 @@ export const fetchUrlsSuccess = (data: string[]): Action => ({
     payload: data
 });
 
-export const fetchCookiesStart = (): Action => ({
+export const fetchCookiesStart = (url: string): Action => ({
     type: ActionType.fetchCookiesStart,
-    payload: null
+    payload: url
 });
 
 export const fetchCookiesSuccess = (data: any[]): Action => ({
@@ -21,7 +21,7 @@ export const fetchCookiesSuccess = (data: any[]): Action => ({
     payload: data
 });
 
-export const fetchResultsStart = (url?: string): Action => ({
+export const fetchAllResultsStart = (url?: string): Action => ({
     type: ActionType.fetchAllResultsStart,
     payload: url
 });
@@ -31,9 +31,9 @@ export const fetchResultsSuccess = (data: any): Action => ({
     payload: data
 });
 
-export const fetchFilteredResultsStart = (filters: any[]): Action => ({
+export const fetchFilteredResultsStart = (query: string): Action => ({
     type: ActionType.fetchFilteredResultsStart,
-    payload: filters
+    payload: query
 });
 
 export const fetchFilteredResultsSuccess = (data: any): Action => ({

@@ -4,7 +4,7 @@ import {
 } from '../../utils/types';
 import {
     fetchUrlsStart,
-    fetchResultsStart,
+    fetchAllResultsStart,
     fetchUrlsSuccess,
     fetchResultError,
     fetchResultsSuccess,
@@ -27,7 +27,7 @@ function* fetchUrls(action: Action) {
 
 function* fetchCookies(action: Action) {
     try {
-        const response = yield axios.get(`/api/results/cookies`)
+        const response = yield axios.get(`/api/results/cookies?url=${action.payload}`)
         const result = yield response.data;
         yield put(fetchCookiesSuccess(result))
     } catch (error) {
@@ -38,7 +38,7 @@ function* fetchCookies(action: Action) {
 function* fetchResults(action: Action) {
     const query = action.payload !== undefined ? `?url=${action.payload}` : ''
     try {
-        const resultsResponse = yield axios.get(`/api/results${query}`);
+        const resultsResponse = yield axios.get(`/api/results/full${query}`);
         const results = yield resultsResponse.data;
         yield put(fetchResultsSuccess(results));
     } catch (error) {
@@ -48,8 +48,9 @@ function* fetchResults(action: Action) {
 
 function* fetchFilteredResult(action: Action) {
     try {
-        const response = yield axios.get(`/api/results/filtered${action.payload}`)
+        const response = yield axios.get(`/api/results${action.payload}`)
         const result = yield response.data;
+        console.log(result);
         yield put(fetchFilteredResultsSuccess(result))
     } catch (error) {
         yield put(fetchResultError(error));
@@ -75,7 +76,7 @@ function* runTest(action: Action) {
         const testData = yield testResponse.data;
         yield put(runTestSuccess(testData));
         yield put(fetchUrlsStart());
-        yield put(fetchResultsStart(payload));
+        yield put(fetchAllResultsStart(payload));
     } catch (error) {
         yield put(fetchResultError(error));
     }

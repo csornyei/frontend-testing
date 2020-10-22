@@ -6,17 +6,6 @@ const testRunner = require("../scripts/runTest");
 
 router.get('/', async (req, res) => {
     const {
-        url
-    } = req.query;
-    let filters = {};
-    if (url) {
-        filters.url = url;
-    }
-    res.send(await getAllResults(filters));
-});
-
-router.get('/filtered', async (req, res) => {
-    const {
         url,
         categories,
         mobile,
@@ -48,6 +37,17 @@ router.get('/filtered', async (req, res) => {
         filters.push({$match: {"cookies": {$all: cookiesObject}}})
     }
     res.send(await getFilteredResults(filters));
+});
+
+router.get('/full', async (req, res) => {
+    const {
+        url
+    } = req.query;
+    let filters = {};
+    if (url) {
+        filters.url = url;
+    }
+    res.send(await getAllResults(filters));
 });
 
 router.post('/', async (req, res) => {
@@ -86,7 +86,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/cookies/', async (req, res) => {
+router.get('/cookies', async (req, res) => {
     const url = req.query.url;
     if (url === undefined) {
         res.status(400);

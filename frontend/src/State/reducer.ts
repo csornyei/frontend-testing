@@ -26,7 +26,10 @@ export default (state = initialState, action: Action): State => {
             return {...state, isFetchingOneResult: true};
         case ActionType.fetchUrlsSuccess:
             return {...state, isFetching: false, urls: action.payload}
+        case ActionType.fetchCookiesSuccess:
+            return {...state, isFetching: false, cookies: action.payload}
         case ActionType.fetchAllResultsSuccess:
+        case ActionType.fetchFilteredResultsSuccess:
             return {...state, isFetching: false, results: action.payload}
         case ActionType.resultsApiError:
             return {...state, isFetching: false, isRunningTest: false, isFetchingOneResult: false, errorMessage: action.payload}

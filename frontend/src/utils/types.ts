@@ -28,7 +28,7 @@ export interface State {
     urls: string[];
     results: Result[];
     errorMessage: any;
-    cookies: any[];
+    cookies: {name: string, values: string[]}[];
     detailedResult: DetailedResult | null,
 };
 

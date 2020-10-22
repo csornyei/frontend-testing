@@ -77,10 +77,25 @@ export default ({
         )
     });
 
+    const convertThrottling = (settings: any) => {
+        if (Object.keys(settings).indexOf("throttling") !== -1) {
+            switch (settings.throttling.throughputKbps) {
+                case 20480:
+                    return '- 4G';
+                default:
+                    return '- not 4G';
+            }
+        }
+        return ""
+    }
+
+    console.log(result.cookies);
+
     return (
         <Container>
             <ResultTitleContainer>
                 <ResultTitle> {result.url} </ResultTitle>
+                <ResultTitle> { result.config.settings.emulatedFormFactor } { convertThrottling(result.config.settings) } {result.cookies.length > 0 ? " - cookies set" : ""} </ResultTitle>
                 <ResultTitle> {format(new Date(result.date), 'yyyy-MM-dd HH:mm')} </ResultTitle>
             </ResultTitleContainer>
             <ScoreRow>

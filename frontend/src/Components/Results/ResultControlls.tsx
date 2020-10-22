@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import {NetworkSpeed, State} from '../../utils/types';
-import { selectURL, fetchUrlsStart, fetchResultsStart } from '../../State/actions';
+import { selectURL, fetchUrlsStart, fetchAllResultsStart, fetchCookiesStart, fetchFilteredResultsStart } from '../../State/actions';
 import { NOT_SELECTED_URL_VALUE } from '../../utils/constants';
 import { ButtonPrimary } from '../Common/Button';
 
@@ -59,9 +59,43 @@ type Filters = {
     cookie: {name: string, value: string}
 }
 
+const queryBuilder = (url: string, filters: Filters) => {
+    const query = [`url=${url}`];
+    const { categories } = filters;
+    if (!(categories.performance && categories.accessibility && categories["best-practices"] && categories.pwa && categories.seo)) {
+        let categoryQuery = []
+        if (categories.performance) {
+            categoryQuery.push('performance')
+        }
+        if (categories.accessibility) {
+            categoryQuery.push('accessibility')
+        }
+        if (categories["best-practices"]) {
+            categoryQuery.push('best-practices')
+        }
+        if (categories.pwa) {
+            categoryQuery.push('pwa')
+        }
+        if (categories.seo) {
+            categoryQuery.push('seo')
+        }
+        query.push(`categories=${categoryQuery.join(',')}`);
+    }
+    if (filters.mobile) {
+        query.push('mobile=mobile')
+    }
+    if (filters.networkSpeed !== 'none') {
+        query.push(`dataSpeed=${filters.networkSpeed}`)
+    }
+    if (filters.cookie.value !== 'none') {
+        query.push(`cookies=${filters.cookie.name}=${filters.cookie.value}`)
+    }
+    return `?${query.join('&')}`
+}
+
 export default () => {
     const dispatch = useDispatch();
-    const { selectedUrl, urls, isRunningTest } = useSelector((state: State) => state);
+    const { selectedUrl, urls, isRunningTest, cookies } = useSelector((state: State) => state);
     const [filters, setFilters] = useState<Filters>({
         categories: {
             performance: true,
@@ -75,21 +109,26 @@ export default () => {
         cookie: {name: 'none', value: 'none'}
     });
 
-    // TODO - filter by config and cookies
-
     useEffect(() => {
         dispatch(fetchUrlsStart());
     }, [dispatch]);
 
     useEffect(() => {
         if (selectedUrl !== NOT_SELECTED_URL_VALUE) {
-            dispatch(fetchResultsStart(selectedUrl));
+            dispatch(fetchFilteredResultsStart(queryBuilder(selectedUrl, filters)));
+            dispatch(fetchCookiesStart(selectedUrl));
         }
     }, [dispatch, selectedUrl]);
 
     useEffect(() => {
+        if (selectedUrl !== NOT_SELECTED_URL_VALUE) {
+            dispatch(fetchFilteredResultsStart(queryBuilder(selectedUrl, filters)));
+        }
+    }, [dispatch, filters]);
+
+    useEffect(() => {
         if (selectedUrl !== NOT_SELECTED_URL_VALUE && isRunningTest === false) {
-            dispatch(fetchResultsStart(selectedUrl));
+            dispatch(fetchAllResultsStart(selectedUrl));
         }
     // selecting new url shouldn't trigger this hook
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -205,10 +244,11 @@ export default () => {
                             name="cookie-name"
                             id="cookie-name-filter-select"
                             onChange={(event) => {
-                                setFilters({...filters, cookie: {...filters.cookie,  name: event.target.value}})
+                                setFilters({...filters, cookie: {name: event.target.value, value: 'none'}})
                             }}
                         >
                             <option value='none'> None </option>
+                            {cookies.map((cookie, idx) =>  <option key={idx} value={cookie.name} > {cookie.name} </option>)}
                         </FilterSelector>
                     </div>
                     <div>
@@ -222,6 +262,11 @@ export default () => {
                             }}
                         >
                             <option value='none'> None </option>
+                            {filters.cookie.name !== 'none' ?
+                                cookies.find((cookie) => cookie.name === filters.cookie.name)!.values.map((value: string, idx: number) => {
+                                    return <option key={idx} value={value} > {value} </option>
+                                })
+                            : null}
                         </FilterSelector>
                     </div>
                 </FilterDiv>
@@ -251,7 +296,7 @@ export default () => {
                 }}
                 onClick={() => {
                     dispatch(selectURL(NOT_SELECTED_URL_VALUE));
-                    dispatch(fetchResultsStart(""))
+                    dispatch(fetchAllResultsStart(""))
                 }}
                 title='Fetch all results' />
             </Container>

@@ -19,7 +19,7 @@ exports.getJSONLighthouseReport = async (url, customConfig, cookies) => {
                 width: 1200,
                 height: 900
             },
-            chromeFlags: ['--headless']
+            chromeFlags: []
         };
 
         const chrome = await chromeLauncher.launch(options);
